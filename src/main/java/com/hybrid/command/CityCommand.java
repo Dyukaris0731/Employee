@@ -11,6 +11,7 @@ import com.hybrid.model.City;
 public class CityCommand {
 	private int id;
 	private String name;
+	private String punchCode;
 	private String countryCode;
 	private String district;
 	private Integer population;
