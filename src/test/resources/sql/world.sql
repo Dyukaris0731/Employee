@@ -62,7 +62,23 @@ select id,
 	   district,
 	   population
   from city
- where countrycode = 'USA' 
+ where countrycode = 'web' 
+ 
+insert into city
+(
+	 name,
+	 countrycode,
+	 district,
+	 population
+)
+values
+(
+	'java',
+	'web',
+	'programming',
+	1000000
+)
+ 
   
 --
 -- Country

@@ -18,9 +18,10 @@
 		</li>
 		<li><a href="" data-ng-click="prevClick(paging.lastPage + 1)">Next</a></li>
 	</ul>
-	<a href="#/append" class="btn btn-primary">Append</a>
+	
 	<table class="table table-striped table-hover">
 		<thead>
+			<tr><td><a href="#/append" class="btn btn-primary">Append</a></td></tr>
 			<tr>
 				<th>No</th>
 				<th>ID</th>

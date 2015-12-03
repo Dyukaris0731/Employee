@@ -13,6 +13,11 @@
 <!-- CityPageService -->
 <bean id="cityPageService" class="com.hybrid.service.CityPageService">
     <property name="cityDao" ref="cityDao"/>
-</bean>    
+</bean>
+
+<!-- CityRegisterService -->
+<bean id="cityRegisterService" class="com.hybrid.service.CityRegisterService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>        
     
 </beans>

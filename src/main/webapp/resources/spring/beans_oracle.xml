@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+<!-- Oracle DataSource -->
+<bean id="oracleDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+<!-- 	<property name="url" value="jdbc:oracle:thin:@192.168.10.31:1521:xe"/> -->
+	<property name="username" value="spring"/>
+	<property name="password" value="tiger"/>
+</bean>
+
+<tx:annotation-driven transaction-manager="transactionManager"/>
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<constructor-arg ref="oracleDataSource"/>
+</bean>
+
+
+<bean id="oracleSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="oracleDataSource"/>
+	<property name="databaseIdProvider">
+		<bean class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+			<property name="properties">
+				<props>
+					<prop key="MySQL">mysql</prop>
+					<prop key="Oracle">oracle</prop>
+				</props>
+			</property>
+		</bean>
+	</property>
+</bean>
+
+<bean id="oracleSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	<constructor-arg ref="oracleSqlSessionFactory"/>
+</bean>
+
+<bean id="oracleCityMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="sqlSessionTemplate" ref="oracleSqlSession"/>
+	<property name="mapperInterface" value="com.hybrid.mapper.CityMapper"/>
+</bean>
+
+<bean id="oracleDeptMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="sqlSessionTemplate" ref="oracleSqlSession"/>
+	<property name="mapperInterface" value="com.hybrid.mapper.DeptMapper"/>
+</bean>
+
+<bean id="oracleEmpMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="sqlSessionTemplate" ref="oracleSqlSession"/>
+	<property name="mapperInterface" value="com.hybrid.mapper.EmpMapper"/>
+</bean>
+
+<bean id="oracleDeptdao" class="com.hybrid.dao.DeptDao">
+	<property name="deptMapper" ref="oracleDeptMapper"/>
+</bean>
+
+<bean id="oracleEmpDao" class="com.hybrid.dao.EmpDao">
+	<property name="empMapper" ref="oracleEmpMapper"/>
+</bean>
+
+<aop:aspectj-autoproxy/>
+
+<bean class="com.hybrid.aspect.LogDaoAspect"/>
+
+<!-- <bean class="com.hybrid.aspect.TransactionAspect"> -->
+<!-- 	<property name="dataSource" ref="oracleDataSource"/> -->
+<!-- </bean> -->
+
+<bean class="com.hybrid.service.DeptRegisterService">
+	<property name="deptDao" ref="oracleDeptdao"/>
+	<property name="empDao" ref="oracleEmpDao"/>
+	<property name="dataSource" ref="oracleDataSource"/>
+</bean>
+
+<bean class="com.hybrid.service.DeptUnRegisterService">
+	<property name="deptDao" ref="oracleDeptdao"/>
+	<property name="empDao" ref="oracleEmpDao"/>
+	<property name="dataSource" ref="oracleDataSource"/>
+</bean>
+
+<bean id="dept" class="com.hybrid.model.Dept">
+	<property name="deptno" value="81"/>
+	<property name="dname" value="총무부"/>
+	<property name="loc" value="부산"/>
+	<property name="emps">
+		<list>
+			<bean class="com.hybrid.model.Emp">
+				<property name="empno" value="400"/>
+				<property name="ename" value="홍길동"/>
+				<property name="dept" ref="dept"/>
+			</bean>
+			<bean class="com.hybrid.model.Emp">
+				<property name="empno" value="500"/>
+				<property name="ename" value="홍길동"/>
+				<property name="dept" ref="dept"/>
+			</bean>
+			<bean class="com.hybrid.model.Emp">
+				<property name="empno" value="600"/>
+				<property name="ename" value="홍길동"/>
+				<property name="dept" ref="dept"/>
+			</bean>
+		</list>
+	</property>
+</bean>
+
+
+
+</beans>
